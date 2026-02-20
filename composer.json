@@ -1,0 +1,26 @@
+{
+    "name": "library/api",
+    "description": "Library API",
+    "type": "project",
+    "require": {
+        "php": ">=8.2",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.94"
+    },
+    "autoload": {
+        "psr-4": {
+            "Controllers\\": "src/Controllers/",
+            "Models\\": "src/Models/",
+            "Services\\": "src/Services/",
+            "Middleware\\": "src/Middleware/",
+            "Core\\": "src/Core/"
+        }
+    },
+    "scripts": {
+        "cs:check": "php-cs-fixer fix --dry-run --diff",
+        "cs:fix": "php-cs-fixer fix"
+    }
+}
