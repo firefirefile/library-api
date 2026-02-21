@@ -147,4 +147,16 @@ class BookService {
         return $this->bookModel->restore($bookId);
     }
     
+    public function saveFoundBook(int $userId, string $googleBookId):int {
+            $googleService = new GoogleBooksService();
+            $bookData = $googleService->fetchBooksDetails($googleBookId);
+
+            return $this->createBook(
+                $userId,
+                $bookData['title'],
+                $bookData['description']
+            );
+
+    }
+
     }
