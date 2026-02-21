@@ -3,6 +3,7 @@
 namespace Services;
 
 use Models\User;
+use Exception; 
 
 class AuthService 
 {   
@@ -10,18 +11,16 @@ class AuthService
      * метод для регистрации, принимает логин, пароль и подтверждение пароля. 
      * создаёт токен и возвращает его в случае успеха. в случае ошибки возвращает нул 
      */
-    public function register(string $login, string $password, string $confirm): ?string  {
+    public function register(string $login, string $password, string $confirm): string  {
         // валидируем входные данные
         $errors = $this->validateRegistration($login, $password, $confirm);
         if (!empty($errors)) {
-            error_log('Ошибка в регистрации: ' . implode(',', $errors));
-            return null;
+             throw new Exception(implode(', ', $errors), 400);
         }
         //проверяем уникальность логина
         $exsistUser = User::findByLogin($login);
         if($exsistUser) {
-            error_log("Ошибка в регистрации: логин '$login' уже используется");
-            return null;
+            throw new Exception("Логин '$login' уже используется", 409);
         }
         //хэшируем пароль
         $hashPass = password_hash($password, PASSWORD_DEFAULT);
@@ -31,8 +30,7 @@ class AuthService
             'password_hash' => $hashPass
         ]);
         if (!$userId) {
-            error_log("Ошибка в регистрации: сохранить запись в базе данных не удалось");
-            return null;
+            throw new Exception("Не удалось создать пользователя", 500);
         }
         //генерация токена
         $token = $this->generateToken();
@@ -46,19 +44,16 @@ class AuthService
     public function login(string $login, string $password):?string {
         $login = trim($login);
         if(empty($login) || empty($password)) {
-            error_log("Ошибка в авторизации: данные для входа не могут быть пустыми");
-            return null;
+            throw new Exception("Логин и пароль не могут быть пустыми", 400);
         }
         //проверяем наличие логина в бд
         $user = User::findByLogin($login);
         if(!$user) {
-            error_log("Ошибка в авторизации: пользователя с логином '$login' не существует");
-            return null;
+            throw new Exception("Неверный логин или пароль", 401);
         }
         //проверяем парол
         if(!password_verify($password, $user['password_hash'])) {
-            error_log("Ошибка в авторизации: неверный пароль");
-            return null;
+            throw new Exception("Неверный логин или пароль", 401);
         }
         $token = $this->generateToken();
         return $token;
