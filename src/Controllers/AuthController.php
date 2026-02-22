@@ -30,12 +30,12 @@ class AuthController {
                 'success' => true,
                 'token' => $token
             ]);
-        } catch(Exception $el) {
-            http_response_code($el -> getCode() ?: 400);
+        } catch(Exception $e) {
+            http_response_code($e -> getCode() ?: 400);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'error' => $el -> getMessage()
+                'error' => $e -> getMessage()
             ]);
         }
     }
@@ -57,12 +57,12 @@ class AuthController {
                 'success' => true,
                 'token' => $token
             ]);
-        } catch(Exception $el) {
-            http_response_code($el -> getCode() ?: 400);
+        } catch(Exception $e) {
+            http_response_code($e -> getCode() ?: 400);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'error' => $el -> getMessage()
+                'error' => $e -> getMessage()
             ]);
         }
     }
