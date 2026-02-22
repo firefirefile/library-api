@@ -158,7 +158,7 @@ class BookService {
 
     }
     /**
-     * метод для получения книг другого пользователя 
+     * метод для получения списка книг другого пользователя 
      */
     public function getUserBooksByAccess(int $ownerId, int $requestingUserId): array {
     
