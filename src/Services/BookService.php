@@ -14,7 +14,6 @@ class BookService {
         $this->bookModel = new Book();
         $this->accessModel = new Access();
     }
-    //добавил дублирующий метод для поиска книг конкретного пользователя: чтобы все операции с книгами шли бы через BookService 
     public function getUserBooks(int $userId) {
         return $this->bookModel->findByUserId($userId);
     }
