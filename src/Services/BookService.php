@@ -157,5 +157,16 @@ class BookService {
             );
 
     }
+    /**
+     * метод для получения книг другого пользователя 
+     */
+    public function getUserBooksByAccess(int $ownerId, int $requestingUserId): array {
+    
+    if (!$this->accessModel->hasAccess($ownerId, $requestingUserId)) {
+        throw new Exception('Нет доступа к книгам этого пользователя', 403);
+    }
+    
+    return $this->bookModel->findByUserId($ownerId);
+}
 
     }
