@@ -1,6 +1,8 @@
 <?php
 
-namespace Models; 
+namespace Models;
+
+use Core\Database;
 use PDO; 
 
 abstract class Model {
@@ -91,6 +93,10 @@ abstract class Model {
          $stmt->execute(['id' => $id]);
 
         return $stmt->rowCount() > 0;
+    }
+
+    protected static function getDB():PDO {
+        return Database::getConnection();
     }
 
     
