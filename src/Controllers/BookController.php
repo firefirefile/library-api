@@ -192,6 +192,9 @@ class BookController {
         }
 
     }
+
+//методы для гугл сервис 
+
     /**
      * GET /books/search?q=... - поиск через Google
      */
