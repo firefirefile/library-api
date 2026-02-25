@@ -42,8 +42,6 @@ class AuthService
         $stmt = $db->prepare("INSERT INTO tokens (user_id, token, expires_at) VALUES (?, ?, ?)");
         $stmt->execute([$userId, $token, $expiresAt]);
 
-        error_log("Успешная регистрация! ID: '$userId', login: '$login' ");
-
         return [
             'user_id' => $userId,
             'token' => $token
