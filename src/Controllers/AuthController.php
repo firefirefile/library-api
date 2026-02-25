@@ -18,7 +18,6 @@ class AuthController {
 
         $login = trim($input['login'] ?? '');
         $password = trim($input['password'] ?? '');
-        // Accept both 'confirm' and 'confirm_password' for flexibility
         $confirm = trim($input['confirm_password'] ?? '');
 
         try {
