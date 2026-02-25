@@ -31,8 +31,8 @@ abstract class Model {
      * @example User::all() вернет всех пользователей
      */
     public static function all() {
-        $sql = 'SELECT * FROM' . static::$table;
-        $stmt = self::$db->query($sql); 
+        $sql = 'SELECT * FROM ' . static::$table;
+        $stmt = self::$db->query($sql);
         
         return $stmt->fetchAll();
     }
