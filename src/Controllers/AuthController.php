@@ -16,9 +16,10 @@ class AuthController {
     public function register():void {
         $input = json_decode(file_get_contents('php://input'), true);
 
-        $login = $input['login'] ?? '';
-        $password = $input['password'] ?? '';
-        $confirm = $input['confirm_password'] ?? '';
+        $login = trim($input['login'] ?? '');
+        $password = trim($input['password'] ?? '');
+        // Accept both 'confirm' and 'confirm_password' for flexibility
+        $confirm = trim($input['confirm_password'] ?? '');
 
         try {
             $token = $this->authService->register($login, $password, $confirm);
@@ -31,11 +32,15 @@ class AuthController {
                 'token' => $token
             ]);
         } catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 400);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 400;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'error' => $e -> getMessage()
+                'error' => $e->getMessage()
             ]);
         }
     }
@@ -43,9 +48,8 @@ class AuthController {
      public function login():void {
         $input = json_decode(file_get_contents('php://input'), true);
 
-        $login = $input['login'] ?? '';
-        $password = $input['password'] ?? '';
-  
+        $login = trim($input['login'] ?? '');
+        $password = trim($input['password'] ?? '');
 
         try {
             $token = $this->authService->login($login, $password);
@@ -58,11 +62,15 @@ class AuthController {
                 'token' => $token
             ]);
         } catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 400);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 400;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'error' => $e -> getMessage()
+                'error' => $e->getMessage()
             ]);
         }
     }
