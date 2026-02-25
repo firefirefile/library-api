@@ -26,8 +26,8 @@ REST-API проект Библиотека книг.
 - **Models** - работа с БД
 - **Core** - базовые классы (Router, Database,  Middleware)
 
-🛠 Команды для разработки
-bash
+Команды для разработки
+
 # Запустить контейнеры
 docker-compose up -d
 
