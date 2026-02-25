@@ -56,6 +56,7 @@ class AuthService
      */
     public function login(string $login, string $password):?array {
         $login = trim($login);
+        $password = trim($password);
         if(empty($login) || empty($password)) {
             throw new Exception("Логин и пароль не могут быть пустыми", 400);
         }
@@ -91,34 +92,34 @@ class AuthService
          * метод для проверки вводимых данных: проверяет логин, пароль, а также проверяет чтобы пароль и его подтверждение совпадали
          */
     private function validateRegistration(string $login, string $password, string $confirm):array  {
-            $errors = [];
-            $login = trim($login);
-            if (empty($login)) {
-                $errors[] = 'Логин не может быть пустым';
-            }
-            elseif (strlen($login) < 3) {
-                $errors[] = 'Логин не может быть короче трёх символов';
-            }
-            elseif (strlen($login) > 30) {
-                $errors[] = 'Логин не может быть длиннее тридцати символов';
-            }
-            elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $login)) {
-                $errors[] = 'Логин может содержать только буквы, цифры и подчеркивания';
-            }
-
-            if(empty($password)) {
-                $errors[] = 'Пароль не может быть пустым';
-            }
-            elseif (strlen($password) < 6) {
-                $errors[] = 'Пароль не может быть короче шести символов';
-            }
-
-            if($password !== $confirm) {
-                $errors[] = 'Пароли должны совпадать';
-            }
-
-            return $errors;
+        $errors = [];
+        $login = trim($login);
+        if (empty($login)) {
+            $errors[] = 'Логин не может быть пустым';
         }
+        elseif (strlen($login) < 3) {
+            $errors[] = 'Логин не может быть короче трёх символов';
+        }
+        elseif (strlen($login) > 30) {
+            $errors[] = 'Логин не может быть длиннее тридцати символов';
+        }
+        elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $login)) {
+            $errors[] = 'Логин может содержать только буквы, цифры и подчеркивания';
+        }
+
+        if(empty($password)) {
+            $errors[] = 'Пароль не может быть пустым';
+        }
+        elseif (strlen($password) < 6) {
+            $errors[] = 'Пароль не может быть короче шести символов';
+        }
+
+        if($password !== $confirm) {
+            $errors[] = 'Пароли должны совпадать';
+        }
+
+        return $errors;
+    }
     /**
      * метод для создания токена 
      */
