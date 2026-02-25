@@ -1,10 +1,9 @@
-<?php 
+<?php
 
-namespace Core; 
+namespace Core;
 
-use Core\Middleware;
-
-class Router {
+class Router
+{
     private array $routes = [];
     private Middleware $middleware;
 
@@ -16,37 +15,39 @@ class Router {
 
     /**
      *  метод добавляет новый маршрут
-     * @param string $method HTTP метод 
+     * @param string $method HTTP метод
      * @param string $path URL паттерн с параметрами в фигурных скобках
      * @param array $handler [класс контроллера, название метода]
      */
-    public function add(string $method, string $path, array $handler): void {
+    public function add(string $method, string $path, array $handler): void
+    {
         $this->routes[] = [
-            'method'=> strtoupper($method),
+            'method' => strtoupper($method),
             'path' => $path,
-            'controller' => $handler[0], 
+            'controller' => $handler[0],
             'action' => $handler[1]
         ];
     }
     /**
      * запускаем роутер - анализируем id ссылки и вызываем нужный контроллер, добавил мидлваре
-     * @param $uri запрашиваемый url 
-     * @param $method HTTP метод запроса 
+     * @param $uri запрашиваемый url
+     * @param $method HTTP метод запроса
      */
-    public function dispatch(string $uri, string $method) {
+    public function dispatch(string $uri, string $method)
+    {
         $uri = parse_url($uri, PHP_URL_PATH);
         $uri = rtrim($uri, '/') ?: '/';
         $method = strtoupper($method);
 
         foreach ($this->routes as $route) {
-            if($route['method'] !== $method) {
-                continue; 
+            if ($route['method'] !== $method) {
+                continue;
             }
 
             $pattern = $this->convertToPattern($route['path']);
-            if(preg_match($pattern, $uri, $matches)) {
+            if (preg_match($pattern, $uri, $matches)) {
                 array_shift($matches);
-                // преобразую в последовательный массив 
+                // преобразую в последовательный массив
                 $matches = array_values($matches);
 
                 $controllerMethod = $this->getControllerMethodString($route);
@@ -64,14 +65,16 @@ class Router {
     /**
      * преобразуем URL паттерн с параметрами в регулярное выражение
      */
-     private function convertToPattern(string $path): string {
+    private function convertToPattern(string $path): string
+    {
         $pattern = preg_replace('/\{([a-z]+)\}/', '(?P<$1>[^/]+)', $path);
         return '#^' . $pattern . '$#';
     }
     /**
      *  метод для формирования строки контроллер@метод
      */
-    private function getControllerMethodString(array $route):string {
+    private function getControllerMethodString(array $route): string
+    {
         $classParts = explode('\\', $route['controller']);
         $shortClass = end($classParts);
 

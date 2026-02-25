@@ -1,25 +1,28 @@
-<?php 
+<?php
 
 namespace Models;
 
-class Book extends Model {
-     protected static string $table = 'books';
+class Book extends Model
+{
+    protected static string $table = 'books';
 
- // методы для работы с книгами 
+    // методы для работы с книгами
     /**
-     * запрашивает книги конкретного пользователя для списка моих книг 
+     * запрашивает книги конкретного пользователя для списка моих книг
      */
-    public static function findByUserId(int $userId):array {
+    public static function findByUserId(int $userId): array
+    {
         $sql = "SELECT * FROM " . static::$table .
         ' WHERE user_id = :user_id AND is_deleted = FALSE';
         $stmt = self::$db->prepare($sql);
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll();
     }
-        /**
-         * поиск книги по названию
-         */
-    public static function searchByTitle(string $query, int $userId):array {
+    /**
+     * поиск книги по названию
+     */
+    public static function searchByTitle(string $query, int $userId): array
+    {
         $sql = "SELECT * FROM " . static::$table . "
         WHERE user_id = :user_id
         AND title LIKE :query
@@ -33,9 +36,10 @@ class Book extends Model {
     }
 
     /**
-     * удаление 
+     * удаление
      */
-    public static function softDelete(int $id):bool {
+    public static function softDelete(int $id): bool
+    {
         $sql = "UPDATE " . static::$table . " SET is_deleted = TRUE WHERE id = :id";
         $stmt = self::$db->prepare($sql);
         $stmt->execute(['id' => $id]);
@@ -43,9 +47,10 @@ class Book extends Model {
     }
 
     /**
-     * восстановление - меняет is_deleted обратно на false 
+     * восстановление - меняет is_deleted обратно на false
      */
-    public static function restore(int $id):bool {
+    public static function restore(int $id): bool
+    {
         $sql = "UPDATE " . static::$table . " SET is_deleted = FALSE WHERE id = :id";
         $stmt = self::$db->prepare($sql);
         $stmt->execute(['id' => $id]);

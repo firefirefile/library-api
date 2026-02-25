@@ -1,20 +1,23 @@
 <?php
 
-namespace Core; 
+namespace Core;
 
+use Exception;
 use PDO;
 use PDOException;
-use Exception;
 
-class Database {
-    private static ?PDO $connection = null; 
-    private static array $config = []; 
+class Database
+{
+    private static ?PDO $connection = null;
+    private static array $config = [];
 
-    public static function init(array $config): void {
+    public static function init(array $config): void
+    {
         self::$config = $config;
     }
 
-    public static function getConnection(): PDO {
+    public static function getConnection(): PDO
+    {
         if (self::$connection === null) {
             if (empty(self::$config)) {
                 throw new Exception('database config not loaded, call Database::init($config) first');

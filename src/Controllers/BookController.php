@@ -1,14 +1,15 @@
-<?php 
+<?php
 
 namespace Controllers;
 
-use Exception; 
+use Exception;
 use Services\BookService;
 use Services\GoogleBooksService;
 
-class BookController {
+class BookController
+{
     private $bookService;
-    private $googleService; 
+    private $googleService;
 
     public function __construct()
     {
@@ -16,10 +17,11 @@ class BookController {
         $this->googleService = new GoogleBooksService();
     }
 
-     /**
-     * GET /books - список книг авторизованного пользователя
-     */
-    public function getUserBooks(int $userId):void {
+    /**
+    * GET /books - список книг авторизованного пользователя
+    */
+    public function getUserBooks(int $userId): void
+    {
 
         try {
             $books = $this->bookService->getUserBooks($userId);
@@ -30,7 +32,7 @@ class BookController {
                 'success' => true,
                 'data' => $books
             ]);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 500;
@@ -41,27 +43,28 @@ class BookController {
                 'success' => false,
                 'error' => $e -> getMessage()
             ]);
-            
+
         }
     }
     /**
      * POST /books - создать книгу
      */
-    public function createBook(int $userId):void {
+    public function createBook(int $userId): void
+    {
         try {
-        // поддерживает json и part form data 
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-        if (strpos($contentType, 'multipart/form-data') !== false) {
-            $input = $_POST;
-        } else {
-            $input = json_decode(file_get_contents('php://input'), true) ?: [];
-        }
+            // поддерживает json и part form data
+            $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+            if (strpos($contentType, 'multipart/form-data') !== false) {
+                $input = $_POST;
+            } else {
+                $input = json_decode(file_get_contents('php://input'), true) ?: [];
+            }
 
-        $title = $input['title'] ?? '';
-        $content = $input['content'] ?? null;
-        $file = $_FILES['book_file'] ?? null;
+            $title = $input['title'] ?? '';
+            $content = $input['content'] ?? null;
+            $file = $_FILES['book_file'] ?? null;
 
-        
+
             $bookId = $this->bookService->createBook($userId, $title, $content, $file);
             http_response_code(201);
             header('Content-Type: application/json');
@@ -69,8 +72,8 @@ class BookController {
                 'success' => true,
                 'book_id' => $bookId
             ]);
-            
-        } catch(Exception $e) {
+
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 400;
@@ -85,21 +88,21 @@ class BookController {
         }
     }
 
-     /**
-     * GET /books/{id} - открыть книгу
-     */
-    public function getBook(int $userId, int $bookId):void {
-        try
-        {
-        $book = $this->bookService->getBook(  $bookId, $userId);
-        http_response_code(200);
+    /**
+    * GET /books/{id} - открыть книгу
+    */
+    public function getBook(int $userId, int $bookId): void
+    {
+        try {
+            $book = $this->bookService->getBook($bookId, $userId);
+            http_response_code(200);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
                 'data' => $book
             ]);
 
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 404;
@@ -116,7 +119,8 @@ class BookController {
     /**
      * PUT /books/{id} - обновить книгу
      */
-    public function updateBook( int $userId, int $bookId):void {
+    public function updateBook(int $userId, int $bookId): void
+    {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
 
@@ -131,7 +135,7 @@ class BookController {
                 'message' => 'Book was updated'
             ]);
 
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 400;
@@ -144,10 +148,11 @@ class BookController {
             ]);
         }
     }
-     /**
-     * DELETE /books/{id} - удалить книгу
-     */
-    public function deleteBook(int $userId, int $bookId, ):void {
+    /**
+    * DELETE /books/{id} - удалить книгу
+    */
+    public function deleteBook(int $userId, int $bookId): void
+    {
         try {
             $result = $this->bookService->deleteBook($bookId, $userId);
 
@@ -157,7 +162,7 @@ class BookController {
                 'success' => true,
                 'message' => 'Book was deleted'
             ]);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 400;
@@ -171,10 +176,11 @@ class BookController {
         }
 
     }
-      /**
+    /**
      * POST /books/{id}/restore - восстановить книгу
      */
-    public function restoreBook(int $userId, int $bookId):void {
+    public function restoreBook(int $userId, int $bookId): void
+    {
         try {
             $result = $this->bookService->restoreBook($bookId, $userId);
 
@@ -184,7 +190,7 @@ class BookController {
                 'success' => true,
                 'message' => 'Book was restored'
             ]);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 403;
@@ -201,7 +207,8 @@ class BookController {
     /**
      * GET /users/{id}/books - книги другого пользователя
      */
-    public function getUserBooksByAccess(int $userId, int $ownerId ):void {
+    public function getUserBooksByAccess(int $userId, int $ownerId): void
+    {
         try {
             $books = $this->bookService->getUserBooksByAccess($ownerId, $userId);
 
@@ -211,7 +218,7 @@ class BookController {
                 'success' => true,
                 'data' => $books
             ]);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 403;
@@ -226,28 +233,29 @@ class BookController {
 
     }
 
-//методы для гугл сервис 
+    //методы для гугл сервис
 
     /**
      * GET /books/search?q=... - поиск через Google
      */
-    public function searchGoogleBooks():void {
+    public function searchGoogleBooks(): void
+    {
         try {
             $query = $_GET['q'] ?? '';
 
-            if(empty($query)) {
+            if (empty($query)) {
                 throw new Exception('Search query is required', 400);
             }
 
             $books = $this->googleService->searchBooks($query);
 
-        http_response_code(200);
+            http_response_code(200);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
                 'data' => $books
             ]);
-        }   catch(Exception $e) {
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 500;
@@ -264,35 +272,36 @@ class BookController {
     /**
      * POST /books/import - сохранить найденную книгу
      */
-    public function saveFoundBook(int $userId):void {
+    public function saveFoundBook(int $userId): void
+    {
 
-    try{
-        $input = json_decode(file_get_contents('php://input'), true);
-        $googleBookId = $input['google_id'] ?? '';
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $googleBookId = $input['google_id'] ?? '';
 
-        if(empty($googleBookId)) {
+            if (empty($googleBookId)) {
                 throw new Exception('Google book ID is required', 400);
             }
-        $bookId = $this->bookService->saveFoundBook($userId, $googleBookId);
-         http_response_code(201);
+            $bookId = $this->bookService->saveFoundBook($userId, $googleBookId);
+            http_response_code(201);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
                 'book_id' => $bookId
             ]);
 
-    } catch (Exception $e) {
-        $code = $e->getCode();
-        if (!is_int($code)) {
-            $code = 500;
-        }
-        http_response_code($code);
-        header('Content-Type: application/json');
+        } catch (Exception $e) {
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 500;
+            }
+            http_response_code($code);
+            header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
                 'error' => $e -> getMessage()
             ]);
-    }
+        }
 
 
     }

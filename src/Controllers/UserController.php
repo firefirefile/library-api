@@ -1,17 +1,18 @@
-<?php 
+<?php
 
 namespace Controllers;
 
 use Exception;
-use Models\User;
 use Models\Access;
+use Models\User;
 
-class UserController {
-
+class UserController
+{
     /**
      * GET /users - список всех участников
      */
-    public function getUsers():void {
+    public function getUsers(): void
+    {
         try {
             $users = User::all();
 
@@ -24,47 +25,49 @@ class UserController {
 
             http_response_code(200);
             header('Content-Type: application/json');
-            
+
             echo json_encode([
                 'success' => true,
                 'data' => $result
             ]);
-        } catch(Exception) {
+        } catch (Exception) {
             http_response_code(500);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
                 'error' => 'Failed to fetch users'
             ]);
-    }}
+        }
+    }
 
-     /**
-     * POST /users/{id}/grant - дать доступ к библиотеке
-     */
-    public function grantAccess(int $ownerId):void {
+    /**
+    * POST /users/{id}/grant - дать доступ к библиотеке
+    */
+    public function grantAccess(int $ownerId): void
+    {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
             $guestId = $input['user_id'] ?? 0;
 
-            if(!$guestId) {
+            if (!$guestId) {
                 throw new Exception('User ID is required', 400);
             }
 
             $result = Access::grant($ownerId, $guestId);
 
-            if($result) {
-                http_response_code(200); 
+            if ($result) {
+                http_response_code(200);
                 header('Content-Type: application/json');
-            
-            echo json_encode([
-                'success' => true,
-                'message' => 'Access granted'
-            ]);
+
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Access granted'
+                ]);
             } else {
                 throw new Exception('Failed to grant access', 500);
             }
 
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 400;

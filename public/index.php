@@ -1,17 +1,18 @@
-<?php 
+<?php
 
-//точка входа в приложение: подключает автозагрузку классов и запускает роутер 
+
+//точка входа в приложение: подключает автозагрузку классов и запускает роутер
 
 
 spl_autoload_register(function ($class) {
-    // маппинг неймспейсов 
+    // маппинг неймспейсов
     $prefixes = [
         'Controllers\\' => __DIR__ . '/../src/Controllers/',
         'Models\\' => __DIR__ . '/../src/Models/',
         'Services\\' => __DIR__ . '/../src/Services/',
         'Core\\' => __DIR__ . '/../src/Core/'
     ];
-    
+
     foreach ($prefixes as $prefix => $base_dir) {
         $len = strlen($prefix);
         if (strncmp($prefix, $class, $len) === 0) {
@@ -26,24 +27,24 @@ spl_autoload_register(function ($class) {
 });
 
 
-use Core\Router;
 use Controllers\AuthController;
 use Controllers\BookController;
 use Controllers\UserController;
 use Core\Database;
+use Core\Router;
 use Models\Model;
 
 $config = require __DIR__ . '/../src/Config/database.php';
 Database::init($config);
 Model::getConnection(Database::getConnection());
 
-$router = new Router(); 
+$router = new Router();
 
 $routes = [
-    //публичные маршруты 
+    //публичные маршруты
     ['POST', '/register', [AuthController::class, 'register']],
     ['POST', '/login', [AuthController::class, 'login']],
-    //защищенные маршруты 
+    //защищенные маршруты
     //user
     ['GET', '/users', [UserController::class, 'getUsers']],
     ['POST', '/users/{id}/grant', [UserController::class, 'grantAccess']],
@@ -59,12 +60,12 @@ $routes = [
     ['GET', '/users/{id}/books', [BookController::class, 'getUserBooksByAccess']]
     ];
 
-    foreach($routes as $route) {
-        $router->add($route[0], $route[1], $route[2]);
-    }
-    
+foreach ($routes as $route) {
+    $router->add($route[0], $route[1], $route[2]);
+}
 
-//запуск: берем текущий юрл и метод запроса, ищем совпадение в маршрутах, вызываем метод контроллера 
+
+//запуск: берем текущий юрл и метод запроса, ищем совпадение в маршрутах, вызываем метод контроллера
 
 $uri = $_SERVER['REQUEST_URI'];
 $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';

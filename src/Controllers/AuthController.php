@@ -1,19 +1,21 @@
 <?php
 
-namespace Controllers; 
+namespace Controllers;
 
-use Services\AuthService;
 use Exception;
+use Services\AuthService;
 
-class AuthController {
+class AuthController
+{
     private $authService;
 
     public function __construct()
     {
-       $this->authService = new AuthService();
+        $this->authService = new AuthService();
     }
 
-    public function register():void {
+    public function register(): void
+    {
         $input = json_decode(file_get_contents('php://input'), true);
 
         $login = trim($input['login'] ?? '');
@@ -25,12 +27,12 @@ class AuthController {
 
             http_response_code(201);
             header('Content-Type: application/json');
-            
+
             echo json_encode([
                 'success' => true,
                 'token' => $token
             ]);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 400;
@@ -44,7 +46,8 @@ class AuthController {
         }
     }
 
-     public function login():void {
+    public function login(): void
+    {
         $input = json_decode(file_get_contents('php://input'), true);
 
         $login = trim($input['login'] ?? '');
@@ -55,12 +58,12 @@ class AuthController {
 
             http_response_code(200);
             header('Content-Type: application/json');
-            
+
             echo json_encode([
                 'success' => true,
                 'token' => $token
             ]);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $code = $e->getCode();
             if (!is_int($code)) {
                 $code = 400;
@@ -74,5 +77,5 @@ class AuthController {
         }
     }
 
-    
+
 };

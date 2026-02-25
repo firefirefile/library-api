@@ -1,13 +1,15 @@
 <?php
 
-namespace Models; 
+namespace Models;
 
-class User extends Model {
+class User extends Model
+{
     protected static string $table = 'users';
     /**
-     * метод поиска по логину 
+     * метод поиска по логину
      */
-    public static function findByLogin(string $login): ?array {
+    public static function findByLogin(string $login): ?array
+    {
 
         $sql = 'SELECT * FROM ' . static::$table . ' WHERE login = :login';
         $stmt = self::$db->prepare($sql);
@@ -17,6 +19,6 @@ class User extends Model {
     }
 
 
-   
+
 
 };
