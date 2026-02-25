@@ -3,3 +3,4 @@ docker/mysql/conf.d/disable-ssl.cnf
 /src/Config/database.php
 docker/mysql/data/
 docker/data/
+.php-cs-fixer.cache
