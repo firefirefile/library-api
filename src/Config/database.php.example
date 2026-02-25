@@ -1,0 +1,9 @@
+<?php
+
+return [
+    'host' => 'mysql',              // имя сервиса в docker-compose
+    'dbname' => 'library',          // имя базы данных
+    'user' => 'example_username',       // пользователь MySQL
+    'password' => 'example_password',   // пароль
+    'charset' => 'utf8mb4'          // кодировка
+];

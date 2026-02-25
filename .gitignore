@@ -1,1 +1,5 @@
 docker/mysql/conf.d/disable-ssl.cnf
+/vendor/
+/src/Config/database.php
+docker/mysql/data/
+docker/data/
