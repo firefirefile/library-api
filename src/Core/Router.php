@@ -2,8 +2,16 @@
 
 namespace Core; 
 
+use Core\Middleware;
+
 class Router {
     private array $routes = [];
+    private Middleware $middleware;
+
+    public function __construct()
+    {
+        $this->middleware = new Middleware();
+    }
 
 
     /**
@@ -21,7 +29,7 @@ class Router {
         ];
     }
     /**
-     * запускаем роутер - анализируем id ссылки и вызываем нужный контроллер 
+     * запускаем роутер - анализируем id ссылки и вызываем нужный контроллер, добавил мидлваре
      * @param $uri запрашиваемый url 
      * @param $method HTTP метод запроса 
      */
@@ -39,10 +47,8 @@ class Router {
             if(preg_match($pattern, $uri, $matches)) {
                 array_shift($matches);
 
-                $controller = new $route['controller'](); 
-                call_user_func_array([$controller, $route['action']], $matches);
-
-                return;
+                $controllerMethod = $this->getControllerMethodString($route);
+                return $this->middleware->handle($route['path'], $matches, $controllerMethod); 
             }
         }
 
@@ -59,5 +65,14 @@ class Router {
      private function convertToPattern(string $path): string {
         $pattern = preg_replace('/\{([a-z]+)\}/', '(?P<$1>[^/]+)', $path);
         return '#^' . $pattern . '$#';
+    }
+    /**
+     *  метод для формирования строки контроллер@метод
+     */
+    private function getControllerMethodString(array $route):string {
+        $classParts = explode('\\', $route['controller']);
+        $shortClass = end($classParts);
+
+        return $shortClass . '@' . $route['action'];
     }
 }
