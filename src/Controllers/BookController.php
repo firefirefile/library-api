@@ -49,8 +49,13 @@ class BookController {
      */
     public function createBook(int $userId):void {
         try {
-
-        $input = json_decode(file_get_contents('php://input'), true);
+        // поддерживает json и part form data 
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        if (strpos($contentType, 'multipart/form-data') !== false) {
+            $input = $_POST;
+        } else {
+            $input = json_decode(file_get_contents('php://input'), true) ?: [];
+        }
 
         $title = $input['title'] ?? '';
         $content = $input['content'] ?? null;
@@ -115,10 +120,10 @@ class BookController {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
 
-            $newTitle = $input['title'] ?? null; 
-            $newContent = $input['content'] ?? null; 
+            $newTitle = $input['title'] ?? null;
+            $newContent = $input['content'] ?? null;
 
-            $result = $this->bookService->updateBook($userId, $bookId, $newTitle, $newContent);
+            $result = $this->bookService->updateBook($bookId, $userId, $newTitle, $newContent);
             http_response_code(200);
             header('Content-Type: application/json');
             echo json_encode([
@@ -263,7 +268,7 @@ class BookController {
 
     try{
         $input = json_decode(file_get_contents('php://input'), true);
-        $googleBookId = $input['google_book_id'] ?? '';
+        $googleBookId = $input['google_id'] ?? '';
 
         if(empty($googleBookId)) {
                 throw new Exception('Google book ID is required', 400);
