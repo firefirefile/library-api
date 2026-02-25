@@ -31,7 +31,11 @@ class BookController {
                 'data' => $books
             ]);
         } catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 500);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 500;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -62,7 +66,11 @@ class BookController {
             ]);
             
         } catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 400);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 400;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -75,10 +83,10 @@ class BookController {
      /**
      * GET /books/{id} - открыть книгу
      */
-    public function getBook(int $bookId, int $userId):void {
+    public function getBook(int $userId, int $bookId):void {
         try
         {
-        $book = $this->bookService->getBook($bookId, $userId);
+        $book = $this->bookService->getBook(  $bookId, $userId);
         http_response_code(200);
             header('Content-Type: application/json');
             echo json_encode([
@@ -87,7 +95,11 @@ class BookController {
             ]);
 
         } catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 404);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 404;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -99,14 +111,14 @@ class BookController {
     /**
      * PUT /books/{id} - обновить книгу
      */
-    public function updateBook(int $bookId, int $userId):void {
+    public function updateBook( int $userId, int $bookId):void {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
 
             $newTitle = $input['title'] ?? null; 
             $newContent = $input['content'] ?? null; 
 
-            $result = $this->bookService->updateBook($bookId, $userId, $newTitle, $newContent);
+            $result = $this->bookService->updateBook($userId, $bookId, $newTitle, $newContent);
             http_response_code(200);
             header('Content-Type: application/json');
             echo json_encode([
@@ -115,7 +127,11 @@ class BookController {
             ]);
 
         } catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 400);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 400;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -126,7 +142,7 @@ class BookController {
      /**
      * DELETE /books/{id} - удалить книгу
      */
-    public function deleteBook(int $bookId, int $userId):void {
+    public function deleteBook(int $userId, int $bookId, ):void {
         try {
             $result = $this->bookService->deleteBook($bookId, $userId);
 
@@ -137,7 +153,11 @@ class BookController {
                 'message' => 'Book was deleted'
             ]);
         } catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 400);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 400;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -149,7 +169,7 @@ class BookController {
       /**
      * POST /books/{id}/restore - восстановить книгу
      */
-    public function restoreBook(int $bookId, int $userId):void {
+    public function restoreBook(int $userId, int $bookId):void {
         try {
             $result = $this->bookService->restoreBook($bookId, $userId);
 
@@ -160,7 +180,11 @@ class BookController {
                 'message' => 'Book was restored'
             ]);
         } catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 403);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 403;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -172,7 +196,7 @@ class BookController {
     /**
      * GET /users/{id}/books - книги другого пользователя
      */
-    public function getUserBooksByAccess(int $ownerId, int $userId):void {
+    public function getUserBooksByAccess(int $userId, int $ownerId ):void {
         try {
             $books = $this->bookService->getUserBooksByAccess($ownerId, $userId);
 
@@ -183,7 +207,11 @@ class BookController {
                 'data' => $books
             ]);
         } catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 403);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 403;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -215,7 +243,11 @@ class BookController {
                 'data' => $books
             ]);
         }   catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 500);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 500;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -245,8 +277,12 @@ class BookController {
             ]);
 
     } catch (Exception $e) {
-        http_response_code($e -> getCode() ?: 500);
-            header('Content-Type: application/json');
+        $code = $e->getCode();
+        if (!is_int($code)) {
+            $code = 500;
+        }
+        http_response_code($code);
+        header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
                 'error' => $e -> getMessage()
