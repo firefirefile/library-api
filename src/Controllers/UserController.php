@@ -65,7 +65,11 @@ class UserController {
             }
 
         } catch(Exception $e) {
-            http_response_code($e -> getCode() ?: 400);
+            $code = $e->getCode();
+            if (!is_int($code)) {
+                $code = 400;
+            }
+            http_response_code($code);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
