@@ -46,9 +46,11 @@ class Router {
             $pattern = $this->convertToPattern($route['path']);
             if(preg_match($pattern, $uri, $matches)) {
                 array_shift($matches);
+                // преобразую в последовательный массив 
+                $matches = array_values($matches);
 
                 $controllerMethod = $this->getControllerMethodString($route);
-                return $this->middleware->handle($route['path'], $matches, $controllerMethod); 
+                return $this->middleware->handle($route['path'], $matches, $controllerMethod);
             }
         }
 

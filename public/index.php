@@ -33,7 +33,6 @@ use Controllers\UserController;
 use Core\Database;
 use Models\Model;
 
-// Initialize database connection
 $config = require __DIR__ . '/../src/Config/database.php';
 Database::init($config);
 Model::getConnection(Database::getConnection());
@@ -51,13 +50,13 @@ $routes = [
     //books
     ['GET', '/books', [BookController::class, 'getUserBooks']],
     ['POST', '/books', [BookController::class, 'createBook']],
+    ['GET', '/books/search', [BookController::class, 'searchGoogleBooks']],
+    ['POST', '/books/import', [BookController::class, 'saveFoundBook']],
     ['GET', '/books/{id}', [BookController::class, 'getBook']],
     ['PUT', '/books/{id}', [BookController::class, 'updateBook']],
     ['DELETE', '/books/{id}', [BookController::class, 'deleteBook']],
     ['POST', '/books/{id}/restore', [BookController::class, 'restoreBook']],
-    ['GET', '/users/{id}/books', [BookController::class, 'getUserBooksByAccess']],
-    ['GET', '/books/search', [BookController::class, 'searchGoogleBooks']],
-    ['POST', '/books/import', [BookController::class, 'saveFoundBook']]
+    ['GET', '/users/{id}/books', [BookController::class, 'getUserBooksByAccess']]
     ];
 
     foreach($routes as $route) {
@@ -69,10 +68,8 @@ $routes = [
 
 $uri = $_SERVER['REQUEST_URI'];
 $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
-// Determine base path from the directory of the front controller (e.g., '/public' from '/public/index.php')
 $basePath = str_replace('\\', '/', dirname($scriptName));
 $basePath = rtrim($basePath, '/');
-// Strip the base path from the URI if present
 if ($basePath !== '' && strpos($uri, $basePath) === 0) {
     $uri = substr($uri, strlen($basePath));
 }
