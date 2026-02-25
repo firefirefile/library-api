@@ -30,6 +30,13 @@ use Core\Router;
 use Controllers\AuthController;
 use Controllers\BookController;
 use Controllers\UserController;
+use Core\Database;
+use Models\Model;
+
+// Initialize database connection
+$config = require __DIR__ . '/../src/Config/database.php';
+Database::init($config);
+Model::getConnection(Database::getConnection());
 
 $router = new Router(); 
 
@@ -60,4 +67,13 @@ $routes = [
 
 //запуск: берем текущий юрл и метод запроса, ищем совпадение в маршрутах, вызываем метод контроллера 
 
-$router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+$uri = $_SERVER['REQUEST_URI'];
+$scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+// Determine base path from the directory of the front controller (e.g., '/public' from '/public/index.php')
+$basePath = str_replace('\\', '/', dirname($scriptName));
+$basePath = rtrim($basePath, '/');
+// Strip the base path from the URI if present
+if ($basePath !== '' && strpos($uri, $basePath) === 0) {
+    $uri = substr($uri, strlen($basePath));
+}
+$router->dispatch($uri, $_SERVER['REQUEST_METHOD']);
